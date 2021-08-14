@@ -10,54 +10,87 @@ document.addEventListener("DOMContentLoaded", () => {
     field = document.querySelectorAll(".board div");
   };
   drawBoard();
-  console.log(field);
+  //#endregion
+field.forEach((item, index) => item.textContent = index )
+  //#region Zmienne
+  const start = document.querySelector(".start");
+  const stop = document.querySelector(".stop");
+  const text = document.querySelector(".text");
+  const points = document.querySelector(".score");
+  const width = 15;
+  let snake = [0, 1, 2];
+  let direction = 1;
+  let foodIndex = 0;
+  let moveSnakeId;
+  let score = 0;
   //#endregion
 
-  //#region Zmienne
-  const stop = document.querySelector(".stop")
-  const width = 15
-  let snake = [0, 1, 2]
-  let direction = 1
-  let foodIndex = 0
-  //#endregion
   //#region rysujemy węża
   const drawSnake = () => {
     snake.forEach((item) => {
       field[item].classList.add("snake");
     });
   };
-  drawSnake();
   //#endregion
-  
+
   //#region usuwamy węża
   const removeSnake = () => {
-    field.forEach((item) => item.classList.remove("snake"));
+    field.forEach((item) => {
+      item.classList.remove("snake");
+    });
   };
   //#endregion
 
+  //#region satart Game
+  function startGame() {
+    removeSnake();
+    field[foodIndex].classList.remove("food");
+    clearInterval(moveSnakeId);
+    score = 0;
+    randomFood();
+    direction = 1;
+    points.textContent = "Score: 0";
+    text.textContent = "";
+    snake = [0, 1, 2];
+    drawSnake();
+    moveSnakeId = setInterval(moveSnake, 1000);
+  }
+  //#endregion
   //#region ruch węża
   const moveSnake = () => {
-    removeSnake();
-    for (let i = 0; i < snake.length; i++) {
-      snake[i] += direction;
+    if (
+      (snake[snake.length - 1] + width >= width * width &&
+        direction === width) || // bottom
+      (snake[snake.length - 1] % width === width - 1 && direction === 1) || //right
+      (snake[snake.length - 1] % width === 0 && direction === -1) || //left
+      (snake[snake.length - 1] - width < 0 && direction === -width) || //top
+      field[snake[snake.length - 1] + direction].classList.contains("snake") //snake
+    ) {
+      text.textContent = "You ran into an obstacle. End of the game";
+      return clearInterval(moveSnakeId);
     }
-    drawSnake()
-    eatFood()
+
+    const tail = snake.shift();
+    field[tail].classList.remove("snake");
+    snake.push(snake[snake.length - 1] + direction);
+    field[snake[snake.length - 1]].classList.add("snake");
+
+    eatFood();
   };
-  let moveSnakeId = setInterval(moveSnake, 1000);
-  stop.addEventListener("click", () => clearInterval(moveSnakeId));
+
   //#endregion
- 
+
   //#region natrafienie na jedzoanko
-  function eatFood (){
-    field.forEach( item => {
-      if(item.classList.contains("food") && item.classList.contains("snake")){
-        item.classList.remove("food")
-        let partSnake = snake[snake.length - 1] + 1
-        snake.push(partSnake)
-        randomFood()
-      }
-    })
+  function eatFood() {
+    if (field[snake[snake.length - 1]].classList.contains("food")) {
+      field[snake[snake.length - 1]].classList.remove("food");
+      let partSnake = snake[snake.length - 1] + 1;
+      snake.push(partSnake);
+      score++;
+      points.textContent = `Score: ${score}`;
+      field[snake[snake.length - 1]].classList.add("snake");
+      randomFood();
+    }
   }
   //#endregion
 
@@ -80,14 +113,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   document.addEventListener("keyup", directionSnake);
   //#endregion
-  
+
   //#region lusujemy pozycję jedzonka
-  function randomFood(){
-    do{
-      foodIndex = Math.floor(Math.random() * field.length)
-    } while (field[foodIndex].classList.contains("snake"))
-    field[foodIndex].classList.add("food")
+  function randomFood() {
+    do {
+      foodIndex = Math.floor(Math.random() * field.length);
+    } while (field[foodIndex].classList.contains("snake"));
+    field[foodIndex].classList.add("food");
   }
-  randomFood()
   //#endregion
+
+  start.addEventListener("click", startGame);
+  stop.addEventListener("click", () => clearInterval(moveSnakeId));
 });
