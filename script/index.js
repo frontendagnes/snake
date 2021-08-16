@@ -11,18 +11,60 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   drawBoard();
   //#endregion
-field.forEach((item, index) => item.textContent = index )
+  // field.forEach((item, index) => item.textContent = index )
   //#region Zmienne
   const start = document.querySelector(".start");
   const stop = document.querySelector(".stop");
   const text = document.querySelector(".text");
   const points = document.querySelector(".score");
+  const rank = document.querySelector(".level");
   const width = 15;
   let snake = [0, 1, 2];
   let direction = 1;
   let foodIndex = 0;
   let moveSnakeId;
   let score = 0;
+  let isPause = true;
+  let speed = 1000;
+  // let levelNamuber = 1;
+  //#endregion
+  //#region LEVEL
+  function level(){
+    if(score === 3){
+      speed = 900
+      rank.textContent = "Level: 2"
+    } else if (score === 5){
+      speed = 800
+      rank.textContent = "Level: 3"
+    }else if (score === 7){
+      speed = 700
+      rank.textContent = "Level: 4"
+    }else if (score === 9){
+      speed = 600
+      rank.textContent = "Level: 5"
+    }else if (score === 11){
+      speed = 500
+      rank.textContent = "Level: 6"
+    }
+    else if (score === 13){
+      speed = 400
+      rank.textContent = "Level: 7"
+    }
+  }
+  //#endregion
+  //#region Pause
+  
+  function pause() {
+    isPause = !isPause;
+    if (!isPause) {
+      clearInterval(moveSnakeId);
+      stop.innerHTML = "Resume";
+    } else {
+      moveSnakeId = setInterval(moveSnake, speed);
+      stop.innerHTML = "Pause";
+    }
+  }
+
   //#endregion
 
   //#region rysujemy węża
@@ -41,21 +83,25 @@ field.forEach((item, index) => item.textContent = index )
   };
   //#endregion
 
-  //#region satart Game
+  //#region start Game
   function startGame() {
     removeSnake();
     field[foodIndex].classList.remove("food");
     clearInterval(moveSnakeId);
+    isPause = true;
+    rank.textContent = "Level: 1"
     score = 0;
+    speed = 1000;
     randomFood();
     direction = 1;
     points.textContent = "Score: 0";
     text.textContent = "";
     snake = [0, 1, 2];
     drawSnake();
-    moveSnakeId = setInterval(moveSnake, 1000);
+    moveSnakeId = setInterval(moveSnake, speed);
   }
   //#endregion
+
   //#region ruch węża
   const moveSnake = () => {
     if (
@@ -91,6 +137,8 @@ field.forEach((item, index) => item.textContent = index )
       field[snake[snake.length - 1]].classList.add("snake");
       randomFood();
     }
+
+    level()
   }
   //#endregion
 
@@ -124,5 +172,5 @@ field.forEach((item, index) => item.textContent = index )
   //#endregion
 
   start.addEventListener("click", startGame);
-  stop.addEventListener("click", () => clearInterval(moveSnakeId));
+  stop.addEventListener("click", pause);
 });

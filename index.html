@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,12 +8,23 @@
     <link rel="stylesheet" href="./style/index.css">
     <title>Snake</title>
 </head>
+
 <body>
-    <button type="button" class="start">Start / Restart</button>
-    <button class="stop">Stop</button>
-    <div class="text"></div>
-    <div class="score"></div>
-    <div class = "board"></div>
+    <div class="settings">
+        <div class="settings__btn">
+            <button type="button" class="btn start">Start / Restart</button>
+            <button class="btn stop">Pause</button>
+        </div>
+        <div class="settings__text">
+            <div class="text"></div>
+            <div class="settings__points">
+                <div class="score">Score: 0</div>
+                <div class="level">Level: 1</div>
+            </div>
+        </div>
+    </div>
+    <div class="board"></div>
     <script src="./script/index.js" defer type="module"></script>
 </body>
+
 </html>
