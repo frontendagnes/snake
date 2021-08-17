@@ -29,31 +29,33 @@ document.addEventListener("DOMContentLoaded", () => {
   // let levelNamuber = 1;
   //#endregion
   //#region LEVEL
-  function level(){
-    if(score === 3){
-      speed = 900
-      rank.textContent = "Level: 2"
-    } else if (score === 5){
-      speed = 800
-      rank.textContent = "Level: 3"
-    }else if (score === 7){
-      speed = 700
-      rank.textContent = "Level: 4"
-    }else if (score === 9){
-      speed = 600
-      rank.textContent = "Level: 5"
-    }else if (score === 11){
-      speed = 500
-      rank.textContent = "Level: 6"
+  function level() {
+    if (score === 3) {
+      speed = 900;
+      rank.textContent = "Level: 2";
+    } else if (score >= 5) {
+      speed = 800;
+      rank.textContent = "Level: 3";
+    } else if (score >= 7) {
+      speed = 700;
+      rank.textContent = "Level: 4";
+    } else if (score >= 9) {
+      speed = 600;
+      rank.textContent = "Level: 5";
+    } else if (score >= 11) {
+      speed = 500;
+      rank.textContent = "Level: 6";
+    } else if (score >= 13) {
+      speed = 400;
+      rank.textContent = "Level: 7";
     }
-    else if (score === 13){
-      speed = 400
-      rank.textContent = "Level: 7"
-    }
+
+    clearInterval(moveSnakeId);
+    moveSnakeId = setInterval(moveSnake, speed);
   }
   //#endregion
   //#region Pause
-  
+
   function pause() {
     isPause = !isPause;
     if (!isPause) {
@@ -89,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     field[foodIndex].classList.remove("food");
     clearInterval(moveSnakeId);
     isPause = true;
-    rank.textContent = "Level: 1"
+    rank.textContent = "Level: 1";
     score = 0;
     speed = 1000;
     randomFood();
@@ -138,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
       randomFood();
     }
 
-    level()
+    level();
   }
   //#endregion
 

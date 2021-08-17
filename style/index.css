@@ -8,20 +8,29 @@ body{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items:flex-end;
     background-color: #00FA9A;
     background-image: url('../img/background.png');
-    background-size: 25% 25%;
+    background-size: 100% 100%;
     background-repeat: no-repeat;
-    background-position: top right;
 }
-
+h1{
+    align-self: center;
+    color: #ffffff;
+    margin-bottom: 50px;
+    font-size: 3rem;
+    text-shadow: 2px 2px 2px #000000;
+}
+.settings{
+    margin-right: 100px;
+}
 .settings,
 .settings__text{
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
     align-items: center;
+    color: #ffffff;
 }
 .btn{
   padding: 10px 20px;
@@ -59,6 +68,7 @@ body{
     width: 600px;
     height: 600px;
     border: 1px solid black;
+    margin-right: 40px;
 }
 .board{
     background-color: #91fcc6; 
@@ -75,7 +85,9 @@ body{
 }
 
 .food{
-    background-color: red;
-    border: 1px solid black;
+    background-image: url("../img/food.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
     box-sizing: border-box;
 }
