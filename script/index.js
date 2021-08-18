@@ -11,8 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   drawBoard();
   //#endregion
-  // field.forEach((item, index) => item.textContent = index )
-  //#region Zmienne
+  // field.forEach((item, index) => (item.textContent = index));
+  //#region Variables
   const start = document.querySelector(".start");
   const stop = document.querySelector(".stop");
   const text = document.querySelector(".text");
@@ -26,36 +26,38 @@ document.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let isPause = true;
   let speed = 1000;
-  // let levelNamuber = 1;
   //#endregion
-  //#region LEVEL
+
+  //#region Level
   function level() {
     if (score === 3) {
       speed = 900;
       rank.textContent = "Level: 2";
-    } else if (score >= 5) {
+    } else if (score === 5) {
       speed = 800;
       rank.textContent = "Level: 3";
-    } else if (score >= 7) {
+    } else if (score === 7) {
       speed = 700;
       rank.textContent = "Level: 4";
-    } else if (score >= 9) {
+    } else if (score === 9) {
       speed = 600;
       rank.textContent = "Level: 5";
-    } else if (score >= 11) {
+    } else if (score === 11) {
       speed = 500;
       rank.textContent = "Level: 6";
-    } else if (score >= 13) {
+    } else if (score === 13) {
       speed = 400;
       rank.textContent = "Level: 7";
+    } else if (score === 15) {
+      speed = 300;
+      rank.textContent = "Level: 8 last";
     }
-
     clearInterval(moveSnakeId);
     moveSnakeId = setInterval(moveSnake, speed);
   }
   //#endregion
-  //#region Pause
 
+  //#region Pause
   function pause() {
     isPause = !isPause;
     if (!isPause) {
@@ -66,10 +68,9 @@ document.addEventListener("DOMContentLoaded", () => {
       stop.innerHTML = "Pause";
     }
   }
-
   //#endregion
-
-  //#region rysujemy węża
+ 
+  //#region Draw a snake
   const drawSnake = () => {
     snake.forEach((item) => {
       field[item].classList.add("snake");
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   //#endregion
 
-  //#region usuwamy węża
+  //#region Remove a snake
   const removeSnake = () => {
     field.forEach((item) => {
       item.classList.remove("snake");
@@ -85,66 +86,58 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   //#endregion
 
-  //#region start Game
+  //#region Start game
   function startGame() {
     removeSnake();
     field[foodIndex].classList.remove("food");
     clearInterval(moveSnakeId);
     isPause = true;
     rank.textContent = "Level: 1";
+    stop.innerHTML = "Pause";
     score = 0;
     speed = 1000;
     randomFood();
     direction = 1;
     points.textContent = "Score: 0";
     text.textContent = "";
-    snake = [0, 1, 2];
+    snake = [2, 1, 0];
     drawSnake();
     moveSnakeId = setInterval(moveSnake, speed);
   }
   //#endregion
 
-  //#region ruch węża
+  //#region Movement a snake
   const moveSnake = () => {
     if (
-      (snake[snake.length - 1] + width >= width * width &&
-        direction === width) || // bottom
-      (snake[snake.length - 1] % width === width - 1 && direction === 1) || //right
-      (snake[snake.length - 1] % width === 0 && direction === -1) || //left
-      (snake[snake.length - 1] - width < 0 && direction === -width) || //top
-      field[snake[snake.length - 1] + direction].classList.contains("snake") //snake
+      (snake[0] + width >= width * width && direction === width) || // bottom
+      (snake[0] % width === width - 1 && direction === 1) || //right
+      (snake[0] % width === 0 && direction === -1) || //left
+      (snake[0] - width < 0 && direction === -width) || //top
+      field[snake[0] + direction].classList.contains("snake") //snake
     ) {
       text.textContent = "You ran into an obstacle. End of the game";
       return clearInterval(moveSnakeId);
     }
-
-    const tail = snake.shift();
+    const tail = snake.pop();
     field[tail].classList.remove("snake");
-    snake.push(snake[snake.length - 1] + direction);
-    field[snake[snake.length - 1]].classList.add("snake");
+    snake.unshift(snake[0] + direction);
 
-    eatFood();
+    // eatFood();
+    if (field[snake[0]].classList.contains("food")) {
+      field[snake[0]].classList.remove("food");
+      field[tail].classList.add("snake");
+      snake.push(tail);
+      randomFood();
+      score++;
+      points.textContent = `Score: ${score}`;
+      level()
+    }
+    field[snake[0]].classList.add("snake");
   };
 
   //#endregion
 
-  //#region natrafienie na jedzoanko
-  function eatFood() {
-    if (field[snake[snake.length - 1]].classList.contains("food")) {
-      field[snake[snake.length - 1]].classList.remove("food");
-      let partSnake = snake[snake.length - 1] + 1;
-      snake.push(partSnake);
-      score++;
-      points.textContent = `Score: ${score}`;
-      field[snake[snake.length - 1]].classList.add("snake");
-      randomFood();
-    }
-
-    level();
-  }
-  //#endregion
-
-  //#region kirunek węża
+  //#region Direction a snake
   function directionSnake(e) {
     switch (e.keyCode) {
       case 39:
@@ -161,10 +154,9 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
     }
   }
-  document.addEventListener("keyup", directionSnake);
   //#endregion
 
-  //#region lusujemy pozycję jedzonka
+  //#region Food random
   function randomFood() {
     do {
       foodIndex = Math.floor(Math.random() * field.length);
@@ -172,7 +164,8 @@ document.addEventListener("DOMContentLoaded", () => {
     field[foodIndex].classList.add("food");
   }
   //#endregion
-
+  
+  document.addEventListener("keyup", directionSnake);
   start.addEventListener("click", startGame);
   stop.addEventListener("click", pause);
 });
