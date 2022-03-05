@@ -7,7 +7,7 @@ Gra Snake jak w starych typach noki, zjadamy przeszkodę i wąż rośnie, po wpa
 
 - Source Code: https://github.com/zabula81/snake
 - Issue Tracker: https://github.com/zabula81/snake/issues
-- View: https://zabula81.github.io/snake/
+- View: https://frontendagnes.github.io/snake/
 
 ### Author
 
